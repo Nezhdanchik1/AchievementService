@@ -1,6 +1,7 @@
 package org.example.achievementservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.achievementservice.dto.UserActivityDto;
 import org.example.achievementservice.dto.UserProgressDto;
 import org.example.achievementservice.dto.UserStatsDto;
 import org.example.achievementservice.service.AchievementPublicService;
@@ -26,9 +27,19 @@ public class AchievementController {
         return ResponseEntity.ok(achievementService.getUserStats(userId));
     }
 
+    @GetMapping("/activity")
+    public ResponseEntity<List<UserActivityDto>> getMyActivity(@RequestHeader("X-User-Id") Long userId) {
+        return ResponseEntity.ok(achievementService.getUserActivityGrid(userId));
+    }
+
     // Для целей тестирования, если X-User-Id не пробрасывается через Gateway напрямую в заголовках при локальном вызове
     @GetMapping("/user/{userId}/stats")
     public ResponseEntity<UserStatsDto> getUserStats(@PathVariable Long userId) {
         return ResponseEntity.ok(achievementService.getUserStats(userId));
+    }
+
+    @GetMapping("/user/{userId}/activity")
+    public ResponseEntity<List<UserActivityDto>> getUserActivity(@PathVariable Long userId) {
+        return ResponseEntity.ok(achievementService.getUserActivityGrid(userId));
     }
 }

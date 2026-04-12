@@ -35,12 +35,22 @@ public class AchievementManager {
 
         // 2. Начисление XP
         int xpAmount = calculateXp(event.getType());
-        statService.addExperience(event.getUserId(), event.getDirectionId(), xpAmount);
+        if (xpAmount > 0) {
+            statService.addExperience(event.getUserId(), event.getDirectionId(), xpAmount);
+        }
 
-        // 3. Прогресс ачивок
+        // 3. Начисление Репутации (социальный фидбек)
+        if (event.getType() == AchievementEventType.REACTION_RECEIVED) {
+            statService.addReputation(event.getUserId(), 10); // 10 репутации за лайк
+        }
+
+        // 4. Запись ежедневной активности для сетки
+        statService.recordActivity(event.getUserId());
+
+        // 5. Прогресс ачивок
         updateAchievements(event);
 
-        // 4. Помечаем событие как обработанное
+        // 6. Помечаем событие как обработанное
         processedEventRepository.save(new ProcessedEvent(event.getEventId(), LocalDateTime.now()));
     }
 
