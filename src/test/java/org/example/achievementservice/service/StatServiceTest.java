@@ -50,6 +50,35 @@ class StatServiceTest {
     }
 
     @Test
+    void addExperience_ShouldUpdateDirectionStats() {
+        Long userId = 1L;
+        Long directionId = 2L;
+        UserStats stats = UserStats.builder().userId(userId).totalXp(0L).level(1).build();
+        when(userStatsRepository.findById(userId)).thenReturn(Optional.of(stats));
+        when(directionStatsRepository.findByUserIdAndDirectionId(userId, directionId)).thenReturn(Optional.empty());
+
+        statService.addExperience(userId, directionId, 100);
+
+        assertEquals(100L, stats.getTotalXp());
+        verify(directionStatsRepository).save(argThat(dirStats -> 
+            dirStats.getUserId().equals(userId) && 
+            dirStats.getDirectionId().equals(directionId) && 
+            dirStats.getXp() == 100L
+        ));
+    }
+
+    @Test
+    void addExperience_LevelShouldBeCalculatedCorrectly() {
+        Long userId = 1L;
+        UserStats stats = UserStats.builder().userId(userId).totalXp(990L).level(2).build();
+        when(userStatsRepository.findById(userId)).thenReturn(Optional.of(stats));
+
+        statService.addExperience(userId, null, 20); // 1010 XP total
+
+        assertEquals(3, stats.getLevel()); // (1010 / 500) + 1 = 3
+    }
+
+    @Test
     void addReputation_ShouldUpdateReputation() {
         Long userId = 1L;
         UserStats stats = UserStats.builder().userId(userId).reputation(100L).build();

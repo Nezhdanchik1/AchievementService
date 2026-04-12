@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/001-create-achievement-tables.yaml
   - include:
       file: db/changelog/002-seed-initial-achievements.yaml
+  - include:
+      file: db/changelog/003-create-activity-table.yaml

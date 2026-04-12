@@ -13,7 +13,7 @@ public class RabbitConfig {
 
     public static final String EXCHANGE_STATISTICS = "statistics-exchange";
     public static final String QUEUE_ACHIEVEMENTS = "achievement-service-queue";
-    public static final String ROUTING_KEY_ACTIONS = "user.action.*";
+    public static final String ROUTING_KEY_ACTIONS = "user.action.#";
 
     @Bean
     public Queue achievementQueue() {
